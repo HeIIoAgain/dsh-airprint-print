@@ -1,0 +1,5 @@
+Pillow>=10.0
+
+# Optional: numpy speeds up URF encoding for photo-sized pages.
+# The pure-Python encoder works without it.
+# numpy>=1.24
