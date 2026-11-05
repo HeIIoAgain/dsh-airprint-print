@@ -1,0 +1,63 @@
+name: CI
+
+# 只做离线检查：语法 + URF 编解码往返。
+# 不需要打印机、不需要局域网，因此可以永久保持绿色。
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: ${{ matrix.os }} · Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.10", "3.12"]
+        exclude:
+          # 每个系统跑两个版本已足够覆盖；少两个 job 省时间
+          - os: windows-latest
+            python: "3.10"
+          - os: macos-latest
+            python: "3.10"
+    env:
+      # Windows runner 默认用 cp1252 输出，强制 UTF-8 免得中文/符号乱码
+      PYTHONUTF8: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Syntax check (compileall)
+        run: python -m compileall -q scripts
+
+      - name: URF codec round-trip self-test (no network)
+        run: python scripts/airprint.py selftest
+
+      # 可选：渲染冒烟测试（不耗纸、不联网）。
+      # 默认注释掉，因为裸 runner 上没有字体，render.py 会 SystemExit("no usable font found")。
+      # 想开就把下面整段取消注释；装 fonts-noto-cjk 还能顺带验证中文字形路径，
+      # 否则 test_page() 会去下载约 8 MB 的 Noto Sans SC。
+      #
+      # - name: Render smoke test (no paper, no network)
+      #   if: runner.os == 'Linux'
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y fonts-noto-cjk
+      #     python scripts/airprint.py test-page --host 192.168.1.50 --dry-run --out /tmp/page.png

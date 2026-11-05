@@ -1,0 +1,38 @@
+# --- Python 字节码与缓存 ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# --- 构建产物 ---
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- 本地虚拟环境 ---
+.venv/
+venv/
+env/
+
+# --- 运行产物：渲染预览图与 URF 载荷 ---
+# 工具默认写到 /tmp，但 --out 可能落在仓库里，别提交进版本库
+*.urf
+out/
+
+# --- 本地状态 / 密钥 / 日志 ---
+state/
+*.log
+.env
+.env.*
+
+# --- 系统与编辑器噪音 ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*~
