@@ -2,6 +2,8 @@
 
 [English](README.en.md) | 简体中文
 
+[![CI](https://github.com/HeIIoAgain/dsh-airprint-print/actions/workflows/ci.yml/badge.svg)](https://github.com/HeIIoAgain/dsh-airprint-print/actions/workflows/ci.yml)
+
 无 CUPS、无驱动、不需要 root，直接把页面渲染成 **Apple Raster（URF）**，再通过 IPP `Print-Job` 发给 AirPrint / Mopria 打印机。
 
 实测针对一类很常见的便宜网络打印机：只开 IPP 631、`document-format-supported = application/octet-stream`、`document-format-preferred = image/urf`、**不支持 PDF**、9100 原始端口关闭。这种机器唯一接受的载荷就是 URF 位图，本工具把「探测 → 渲染 → 编码 → 提交 → 等完成」整条链路做完。

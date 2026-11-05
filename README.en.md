@@ -2,6 +2,8 @@
 
 English | [简体中文](README.md)
 
+[![CI](https://github.com/HeIIoAgain/dsh-airprint-print/actions/workflows/ci.yml/badge.svg)](https://github.com/HeIIoAgain/dsh-airprint-print/actions/workflows/ci.yml)
+
 Print to AirPrint / Mopria printers **without CUPS, without a driver, without root**. This tool renders a page to an **Apple Raster (URF)** bitmap and submits it through IPP `Print-Job`.
 
 It targets a very common class of cheap network printers: only IPP 631 is open, `document-format-supported = application/octet-stream`, `document-format-preferred = image/urf`, **no PDF support**, and raw port 9100 closed. The only payload those devices accept is URF, and this tool handles the whole chain: probe → render → encode → submit → wait.
